@@ -1,0 +1,31 @@
+<footer id="stickyFooter" class="hidden fixed bottom-0 left-0 right-0 bg-white text-purple-900 text-xs py-3 px-4 border-t border-gray-300 text-center md:text-left z-50 transition-opacity duration-500">
+  <div class="flex flex-col md:flex-row items-center justify-between max-w-6xl mx-auto">
+    <p class="mb-2 md:mb-0">&copy; 2025 BharatBartan. Preserving Indian heritage, one utensil at a time.</p>
+    <div class="flex items-center">
+      <div class="flex space-x-4 text-purple-700 text-xs font-medium">
+        <a href="index.html" class="hover:underline transition">Home</a>
+        <a href="about.html" class="hover:underline transition">Why Us</a>
+        <a href="cart.html" class="hover:underline transition">Cart</a>
+        <a href="contact.html" class="hover:underline transition">Contact</a>
+      </div>
+      <button onclick="scrollToTop()" class="ml-4 text-purple-700 hover:underline text-xs">Back to Top</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const footer = document.getElementById('stickyFooter');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 100) {
+        footer.classList.remove('hidden');
+      } else {
+        footer.classList.add('hidden');
+      }
+    });
+  });
+
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>

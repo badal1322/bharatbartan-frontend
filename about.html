@@ -5,28 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Why BharatBartan</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
   <style>
     body {
-      background: linear-gradient(to bottom, #0c0c3c, #2e0d0d);
+      background: linear-gradient(to bottom, rgba(12,12,60,0.7), rgba(46,13,13,0.7)),
+                  url('assets/image.png') no-repeat center center fixed;
+      background-size: cover;
       font-family: 'Georgia', serif;
     }
+    @keyframes wordFadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-words span {
+      display: inline-block;
+      opacity: 0;
+      animation: wordFadeIn 0.6s ease forwards;
+    }
+    .animate-words span:nth-child(1) { animation-delay: 0.1s; }
+    .animate-words span:nth-child(2) { animation-delay: 0.3s; }
+    .animate-words span:nth-child(3) { animation-delay: 0.5s; }
+    .animate-words span:nth-child(4) { animation-delay: 0.7s; }
   </style>
 </head>
 <body class="text-white">
-  <!-- Navbar -->
-  <nav class="flex justify-between items-center px-6 py-4 bg-red-900 shadow-md">
-    <h1 class="text-2xl font-bold">BharatBartan</h1>
-    <div>
-      <a href="index.html" class="px-4 hover:underline">Home</a>
-      <a href="about.html" class="px-4 hover:underline">Why Us</a>
-      <a href="cart.html" class="px-4 hover:underline">Cart</a>
-      <a href="contact.html" class="px-4 hover:underline">Contact</a>
-    </div>
-  </nav>
+  <!-- Navbar Placeholder -->
+  <div id="navbar"></div>
+  <script>
+    fetch("navbar.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("navbar").innerHTML = data;
+      });
+  </script>
 
   <!-- About Section -->
   <section class="py-10 px-6 max-w-4xl mx-auto">
-    <h2 class="text-4xl font-bold text-yellow-400 mb-4">Why Choose BharatBartan?</h2>
+    <h2 class="text-4xl font-bold text-yellow-400 mb-4 animate-words" style="font-family: 'Playfair Display', serif;">
+      <span>Why</span> <span>Choose</span> <span>Bharat</span><span>Bartan?</span>
+    </h2>
     <p class="text-lg mb-6">At BharatBartan, we believe in reconnecting with the roots of India through the timeless tradition of handcrafted mitti and copper utensils. Our ancestors used these materials not just for cooking but for health, wellness, and a deeper connection with nature.</p>
     <ul class="list-disc list-inside mb-6 space-y-2 text-lg">
       <li><strong>Mitti (Clay) Utensils:</strong> Naturally alkaline, cool water, enhance digestion, and eco-friendly.</li>
@@ -38,9 +55,14 @@
     <a href="cart.html" class="inline-block bg-yellow-500 text-black font-semibold px-6 py-2 rounded hover:bg-yellow-600 transition">Shop Now</a>
   </section>
 
-  <!-- Footer -->
-  <footer class="bg-red-900 text-center text-white py-4 mt-10">
-    <p>&copy; 2025 BharatBartan. Rooted in tradition, crafted for today.</p>
-  </footer>
+  <div id="footer"></div>
+  <script>
+    fetch("footer.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("footer").innerHTML = data;
+      });
+  </script>
+
 </body>
 </html>
