@@ -1,0 +1,69 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart - BharatBartan</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #0c0c3c, #2e0d0d);
+      font-family: 'Georgia', serif;
+    }
+  </style>
+</head>
+<body class="text-white">
+  <!-- Navbar -->
+  <nav class="flex justify-between items-center px-6 py-4 bg-red-900 shadow-md">
+    <h1 class="text-2xl font-bold">BharatBartan</h1>
+    <div>
+      <a href="index.html" class="px-4 hover:underline">Home</a>
+      <a href="about.html" class="px-4 hover:underline">Why Us</a>
+      <a href="cart.html" class="px-4 hover:underline">Cart</a>
+      <a href="contact.html" class="px-4 hover:underline">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Cart Section -->
+  <section class="py-10 px-6 max-w-4xl mx-auto">
+    <h2 class="text-3xl font-bold text-yellow-400 mb-6">Your Cart</h2>
+    <div id="cartContainer" class="space-y-4"></div>
+
+    <div id="totalAmount" class="text-xl font-semibold mt-8"></div>
+    <a href="order.html" class="inline-block mt-6 bg-yellow-500 text-black font-bold px-6 py-2 rounded hover:bg-yellow-600 transition">Proceed to Checkout</a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-red-900 text-center text-white py-4 mt-10">
+    <p>&copy; 2025 BharatBartan. We value your tradition.</p>
+  </footer>
+
+  <script>
+    // Simulated cart items (replace with fetch in real app)
+    const cartItems = [
+      { title: "Clay Pot", price: 150, quantity: 2 },
+      { title: "Copper Kalash", price: 299, quantity: 1 }
+    ];
+
+    const cartContainer = document.getElementById("cartContainer");
+    const totalAmount = document.getElementById("totalAmount");
+    let total = 0;
+
+    cartItems.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "bg-white text-black p-4 rounded shadow";
+      div.innerHTML = `
+        <h3 class="text-lg font-bold">${item.title}</h3>
+        <p>Quantity: ${item.quantity}</p>
+        <p>Price: ₹${item.price * item.quantity}</p>
+      `;
+      total += item.price * item.quantity;
+      cartContainer.appendChild(div);
+    });
+
+    totalAmount.innerText = "Total: ₹" + total;
+  </script>
+</body>
+</html>

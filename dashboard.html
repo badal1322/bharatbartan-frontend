@@ -1,0 +1,82 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - BharatBartan</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #0c0c3c, #2e0d0d);
+      font-family: 'Georgia', serif;
+    }
+  </style>
+</head>
+<body class="text-white">
+  <nav class="flex justify-between items-center px-6 py-4 bg-red-900 shadow-md">
+    <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+    <a href="index.html" class="px-4 hover:underline">Back to Home</a>
+  </nav>
+
+  <section class="p-6 max-w-5xl mx-auto">
+    <h2 class="text-3xl font-bold text-yellow-400 mb-4">All Orders</h2>
+
+    <!-- Admin Password Input -->
+    <div class="mb-6">
+      <label class="block mb-2">Admin Password:</label>
+      <input type="password" id="adminPass" class="w-full p-2 rounded text-black" placeholder="Enter admin password">
+      <button onclick="loadOrders()" class="mt-2 bg-yellow-500 text-black font-semibold px-6 py-2 rounded hover:bg-yellow-600">Access Dashboard</button>
+    </div>
+
+    <div id="orderContainer" class="space-y-4 hidden"></div>
+  </section>
+
+  <script>
+    function loadOrders() {
+      const pass = document.getElementById("adminPass").value;
+      if (pass !== "admin123") {
+        alert("Access Denied: Invalid admin password");
+        return;
+      }
+      document.getElementById("orderContainer").classList.remove("hidden");
+
+      fetch("http://localhost:5000/api/orders")
+        .then(res => res.json())
+        .then(orders => {
+          const container = document.getElementById("orderContainer");
+          container.innerHTML = "";
+          orders.forEach(order => {
+            const div = document.createElement("div");
+            div.className = "bg-white text-gray-900 p-4 rounded shadow-md";
+            div.innerHTML = `
+              <h3 class="text-lg font-bold">Order for ${order.userEmail}</h3>
+              <p><strong>Payment ID:</strong> ${order.razorpayPaymentId}</p>
+              <p><strong>Amount:</strong> ₹${order.totalAmount}</p>
+              <p><strong>Status:</strong> <span id="status-${order._id}">${order.status}</span></p>
+              <p><strong>Address:</strong> ${order.address}</p>
+              <p><strong>Products:</strong> ${order.productList.join(", ")}</p>
+              <p class="text-sm text-gray-600">Placed on: ${new Date(order.createdAt).toLocaleString()}</p>
+              <button onclick="markDelivered('${order._id}')" class="mt-2 bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700">Mark Delivered</button>
+            `;
+            container.appendChild(div);
+          });
+        });
+    }
+
+    function markDelivered(orderId) {
+      fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Delivered" })
+      })
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById(`status-${orderId}`).textContent = "Delivered";
+          alert("Order marked as delivered!");
+        });
+    }
+  </script>
+</body>
+</html>

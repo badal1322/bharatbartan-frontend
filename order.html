@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - BharatBartan</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(to bottom, #0c0c3c, #2e0d0d);
+      font-family: 'Georgia', serif;
+    }
+  </style>
+</head>
+<body class="text-white">
+  <!-- Navbar -->
+  <nav class="flex justify-between items-center px-6 py-4 bg-red-900 shadow-md">
+    <h1 class="text-2xl font-bold">BharatBartan</h1>
+    <div>
+      <a href="index.html" class="px-4 hover:underline">Home</a>
+      <a href="about.html" class="px-4 hover:underline">Why Us</a>
+      <a href="cart.html" class="px-4 hover:underline">Cart</a>
+      <a href="contact.html" class="px-4 hover:underline">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Checkout Section -->
+  <section class="py-10 px-6 max-w-xl mx-auto text-center">
+    <h2 class="text-3xl font-bold text-yellow-400 mb-6">Confirm Your Order</h2>
+    <p class="mb-4 text-lg">You are about to pay <strong>₹299</strong> for your traditional BharatBartan items.</p>
+    <button id="payBtn" class="bg-yellow-500 text-black font-bold px-6 py-3 rounded hover:bg-yellow-600 transition">Pay with Razorpay</button>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-red-900 text-center text-white py-4 mt-10">
+    <p>&copy; 2025 BharatBartan. Tradition Delivered.</p>
+  </footer>
+
+  <script>
+    document.getElementById("payBtn").onclick = function(e) {
+      var options = {
+        key: "YOUR_RAZORPAY_KEY_ID", // Replace with your real Razorpay Key ID
+        amount: 29900, // in paise = ₹299
+        currency: "INR",
+        name: "BharatBartan",
+        description: "Traditional Product Purchase",
+        image: "https://yourdomain.com/logo.png",
+        handler: function (response) {
+          // After successful payment, redirect to success page
+          window.location.href = "success.html";
+        },
+        prefill: {
+          name: "BharatBartan Buyer",
+          email: "buyer@example.com",
+          contact: "9999999999"
+        },
+        theme: {
+          color: "#8B0000"
+        }
+      };
+      var rzp = new Razorpay(options);
+      rzp.open();
+      e.preventDefault();
+    };
+  </script>
+</body>
+</html>
