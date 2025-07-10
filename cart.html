@@ -41,29 +41,30 @@
   </footer>
 
   <script>
-    // Simulated cart items (replace with fetch in real app)
-    const cartItems = [
-      { title: "Clay Pot", price: 150, quantity: 2 },
-      { title: "Copper Kalash", price: 299, quantity: 1 }
-    ];
+    fetch("https://bharatbartan-backend.onrender.com/api/cart")
+      .then(response => response.json())
+      .then(cartItems => {
+        const cartContainer = document.getElementById("cartContainer");
+        const totalAmount = document.getElementById("totalAmount");
+        let total = 0;
 
-    const cartContainer = document.getElementById("cartContainer");
-    const totalAmount = document.getElementById("totalAmount");
-    let total = 0;
+        cartItems.forEach(item => {
+          const div = document.createElement("div");
+          div.className = "bg-white text-black p-4 rounded shadow";
+          div.innerHTML = `
+            <h3 class="text-lg font-bold">${item.title}</h3>
+            <p>Quantity: ${item.quantity}</p>
+            <p>Price: ₹${item.price * item.quantity}</p>
+          `;
+          total += item.price * item.quantity;
+          cartContainer.appendChild(div);
+        });
 
-    cartItems.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "bg-white text-black p-4 rounded shadow";
-      div.innerHTML = `
-        <h3 class="text-lg font-bold">${item.title}</h3>
-        <p>Quantity: ${item.quantity}</p>
-        <p>Price: ₹${item.price * item.quantity}</p>
-      `;
-      total += item.price * item.quantity;
-      cartContainer.appendChild(div);
-    });
-
-    totalAmount.innerText = "Total: ₹" + total;
+        totalAmount.innerText = "Total: ₹" + total;
+      })
+      .catch(error => {
+        console.error("Error loading cart:", error);
+      });
   </script>
 </body>
 </html>
