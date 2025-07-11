@@ -12,176 +12,50 @@
     }
   </style>
 </head>
-<body class="text-white">
-  <div id="navbar"></div>
+<body class="bg-white text-black">
+  <div class="fixed inset-0 z-0">
+    <img src="./assets/image.png" alt="Background" class="w-full h-full object-cover opacity-30">
+  </div>
+  <div class="relative z-10">
+    <div id="navbar"></div>
 
-  <!-- Cart Section -->
-  <section class="py-10 px-6 max-w-4xl mx-auto">
-    <h2 class="text-3xl font-bold text-yellow-400 mb-6">Your Cart</h2>
-    <div id="cartContainer" class="space-y-4"></div>
+    <section class="py-20 px-6 w-full min-h-screen text-center text-white bg-white/80 backdrop-blur-md shadow-lg">
+      <h2 class="text-4xl font-bold text-white mb-4">Buy for Your Health</h2>
+      <p class="text-base italic text-white mb-8 animate-pulse">Click the button below to place your order — we will soon reach out to you.<br>Experience India. Experience BharatBartan.</p>
+      <p class="text-base text-white mb-6">Make your cart after clicking this payment button.</p>
+      <div class="flex justify-center">
+        <form>
+          <script
+            src="https://checkout.razorpay.com/v1/payment-button.js"
+            data-payment_button_id="pl_Qrl2pHsyaRZrh0"
+            async>
+          </script>
+        </form>
+      </div>
+      <div class="mt-8 text-sm text-white space-y-2">
+        <p>• Clay pots are alkaline and balance out the acidity of food.</p>
+        <p>• They retain nutrients due to slow cooking.</p>
+        <p>• No harmful chemicals like in non-stick cookware.</p>
+        <p>• Enhance flavor and aroma naturally.</p>
+      </div>
+    </section>
 
-    <div id="totalAmount" class="text-xl font-semibold mt-8"></div>
-    <button onclick="sendOrderToBackend()" class="inline-block mt-6 bg-yellow-500 text-black font-bold px-6 py-2 rounded hover:bg-yellow-600 transition">Proceed to Checkout</button>
-  </section>
+    <div id="footer"></div>
 
-  <div id="footer"></div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const cartContainer = document.getElementById("cartContainer");
-      const totalAmount = document.getElementById("totalAmount");
-
-      function loadCart() {
-        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-        cartContainer.innerHTML = "";
-        let total = 0;
-
-        cart.forEach((item, index) => {
-          const itemTotal = item.price * item.quantity;
-          total += itemTotal;
-
-          const div = document.createElement("div");
-          div.className = "bg-black text-white p-4 rounded shadow border border-gray-700";
-          div.innerHTML = `
-            <div class="flex items-center gap-4">
-              <img src="assets/${item.title.toLowerCase().replace(/\s+/g, '-')}.jpg" alt="${item.title}" class="w-16 h-16 object-cover rounded border border-gray-500">
-              <div>
-                <h3 class="text-lg font-bold font-serif">${item.title}</h3>
-                <p class="text-sm">Unit Price: ₹${item.price}</p>
-                <div class="flex items-center space-x-2 my-2">
-                  <button class="bg-gray-300 text-black px-2 rounded" onclick="updateQty(${index}, -1)">-</button>
-                  <span>${item.quantity}</span>
-                  <button class="bg-gray-300 text-black px-2 rounded" onclick="updateQty(${index}, 1)">+</button>
-                </div>
-                <p class="text-sm">Total: ₹${itemTotal}</p>
-              </div>
-            </div>
-          `;
-          cartContainer.appendChild(div);
-        });
-
-        totalAmount.innerText = "Total: ₹" + total;
-
-        const payButton = document.createElement("button");
-        payButton.innerText = "Pay ₹" + total + " Online";
-        payButton.className = "block mt-4 bg-green-500 text-white font-semibold px-6 py-2 rounded hover:bg-green-600 transition";
-        payButton.onclick = () => {
-          console.log("✅ Pay button clicked");
-          fetch("https://bharatbartan-backend.onrender.com/api/create-order", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ totalAmount: total })
-          })
-            .then(res => res.json())
-            .then(order => {
-              console.log(order);
-              console.log("🔑 Fetching Razorpay key...");
-              fetch("https://bharatbartan-backend.onrender.com/api/get-razorpay-key")
-                .then(res => res.json())
-                .then(data => {
-                  console.log(data.key);
-                  const options = {
-                    key: data.key,
-                    amount: order.amount,
-                    currency: order.currency,
-                    name: "BharatBartan",
-                    description: "Cart Checkout",
-                    order_id: order.orderId,
-                    handler: function (response) {
-                      fetch("https://bharatbartan-backend.onrender.com/api/verify-payment", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          razorpay_order_id: response.razorpay_order_id,
-                          razorpay_payment_id: response.razorpay_payment_id,
-                          razorpay_signature: response.razorpay_signature
-                        })
-                      })
-                        .then(res => res.json())
-                        .then(data => {
-                          if (data.verified) {
-                            alert("✅ Payment Verified Successfully!");
-                            sendOrderToBackend();
-                          } else {
-                            alert("❌ Payment verification failed.");
-                          }
-                        })
-                        .catch(err => {
-                          console.error("Verification error:", err);
-                          alert("Error verifying payment.");
-                        });
-                    },
-                    prefill: {
-                      name: "Customer",
-                      email: "customer@example.com",
-                      contact: "9999999999"
-                    },
-                    theme: {
-                      color: "#F37254"
-                    }
-                  };
-                  console.log("🧾 Opening Razorpay checkout...");
-                  const rzp = new Razorpay(options);
-                  rzp.open();
-                });
-            })
-            .catch(err => {
-              console.error("Error creating Razorpay order:", err);
-              alert("Unable to initiate payment.");
-            });
-        };
-        cartContainer.appendChild(payButton);
-      }
-
-      function sendOrderToBackend() {
-        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-        const orderData = {
-          items: cart,
-          timestamp: new Date().toISOString()
-        };
-
-        fetch("https://bharatbartan-backend.onrender.com/api/save-order", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(orderData)
-        })
-        .then(res => res.json())
+    <script>
+      fetch("navbar.html")
+        .then(res => res.text())
         .then(data => {
-          console.log("Order saved:", data);
-          // Optionally redirect to success page
-          window.location.href = "success.html";
-        })
-        .catch(err => {
-          console.error("Order save failed:", err);
+          document.getElementById("navbar").innerHTML = data;
         });
-      }
 
-      window.updateQty = (index, change) => {
-        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-        cart[index].quantity += change;
-        if (cart[index].quantity <= 0) cart.splice(index, 1);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        loadCart();
-      };
-
-      loadCart();
-    });
-  </script>
-  <script>
-    fetch("navbar.html")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("navbar").innerHTML = data;
-      });
-
-    fetch("footer.html")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("footer").innerHTML = data;
-      });
-  </script>
+      fetch("footer.html")
+        .then(res => res.text())
+        .then(data => {
+          document.getElementById("footer").innerHTML = data;
+        });
+    </script>
+  </div>
 </body>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </html>
