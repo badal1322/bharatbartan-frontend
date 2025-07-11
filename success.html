@@ -25,6 +25,7 @@
   <!-- Success Message -->
   <section class="py-16 px-6">
     <h2 class="text-4xl font-bold text-yellow-400 mb-6">Thank You!</h2>
+    <p id="orderInfo" class="text-lg mb-6"></p>
     <p class="text-xl mb-4">Your order has been placed successfully. 🙏</p>
     <p class="mb-6">We are preparing your traditional utensils with care and devotion.</p>
     <p class="mb-2">📦 Estimated Delivery: <strong>3–5 working days</strong></p>
@@ -41,8 +42,15 @@
   fetch("https://bharatbartan-backend.onrender.com/api/orders/latest")
     .then(res => res.json())
     .then(data => {
-      console.log("Latest order confirmation:", data);
-      // You can display confirmation details dynamically here
+      const orderPara = document.getElementById("orderInfo");
+      orderPara.innerHTML = `
+        🧾 <strong>Order ID:</strong> ${data._id}<br>
+        🛍️ <strong>Items:</strong> ${data.productList.join(", ")}<br>
+        💸 <strong>Total:</strong> ₹${data.totalAmount}<br>
+        📬 <strong>Delivery To:</strong> ${data.address}<br>
+        📞 <strong>We will contact you at:</strong> ${data.userEmail}<br><br>
+        📢 Your order has been received and will be delivered soon. Thank you for shopping with BharatBartan!
+      `;
     })
     .catch(err => {
       console.error("Error fetching order confirmation:", err);

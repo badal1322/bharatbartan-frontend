@@ -62,10 +62,74 @@
 
         totalAmount.innerText = "Total: ₹" + total;
 
-        const payButton = document.createElement("a");
-        payButton.href = `https://rzp.io/l/your-custom-link?amount=${total}`;
+        const payButton = document.createElement("button");
         payButton.innerText = "Pay ₹" + total + " Online";
         payButton.className = "block mt-4 bg-green-500 text-white font-semibold px-6 py-2 rounded hover:bg-green-600 transition";
+        payButton.onclick = () => {
+          console.log("✅ Pay button clicked");
+          fetch("https://bharatbartan-backend.onrender.com/api/create-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ totalAmount: total })
+          })
+            .then(res => res.json())
+            .then(order => {
+              console.log(order);
+              console.log("🔑 Fetching Razorpay key...");
+              fetch("https://bharatbartan-backend.onrender.com/api/get-razorpay-key")
+                .then(res => res.json())
+                .then(data => {
+                  console.log(data.key);
+                  const options = {
+                    key: data.key,
+                    amount: order.amount,
+                    currency: order.currency,
+                    name: "BharatBartan",
+                    description: "Cart Checkout",
+                    order_id: order.orderId,
+                    handler: function (response) {
+                      fetch("https://bharatbartan-backend.onrender.com/api/verify-payment", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          razorpay_order_id: response.razorpay_order_id,
+                          razorpay_payment_id: response.razorpay_payment_id,
+                          razorpay_signature: response.razorpay_signature
+                        })
+                      })
+                        .then(res => res.json())
+                        .then(data => {
+                          if (data.verified) {
+                            alert("✅ Payment Verified Successfully!");
+                            sendOrderToBackend();
+                          } else {
+                            alert("❌ Payment verification failed.");
+                          }
+                        })
+                        .catch(err => {
+                          console.error("Verification error:", err);
+                          alert("Error verifying payment.");
+                        });
+                    },
+                    prefill: {
+                      name: "Customer",
+                      email: "customer@example.com",
+                      contact: "9999999999"
+                    },
+                    theme: {
+                      color: "#F37254"
+                    }
+                  };
+                  console.log("🧾 Opening Razorpay checkout...");
+                  const rzp = new Razorpay(options);
+                  rzp.open();
+                });
+            })
+            .catch(err => {
+              console.error("Error creating Razorpay order:", err);
+              alert("Unable to initiate payment.");
+            });
+        };
         cartContainer.appendChild(payButton);
       }
 
@@ -119,4 +183,5 @@
       });
   </script>
 </body>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </html>
