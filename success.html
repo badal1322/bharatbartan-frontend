@@ -13,14 +13,7 @@
   </style>
 </head>
 <body class="text-white text-center">
-  <!-- Navbar -->
-  <nav class="flex justify-between items-center px-6 py-4 bg-red-900 shadow-md">
-    <h1 class="text-2xl font-bold">BharatBartan</h1>
-    <div>
-      <a href="index.html" class="px-4 hover:underline">Home</a>
-      <a href="cart.html" class="px-4 hover:underline">Cart</a>
-    </div>
-  </nav>
+  <div id="navbar"></div>
 
   <!-- Success Message -->
   <section class="py-16 px-6">
@@ -54,6 +47,21 @@
     })
     .catch(err => {
       console.error("Error fetching order confirmation:", err);
+    });
+</script>
+<script>
+  fetch("navbar.html")
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById("navbar").innerHTML = data;
+
+      const toggleButton = document.getElementById("toggleButton");
+      const mobileMenu = document.getElementById("mobileMenu");
+      if (toggleButton && mobileMenu) {
+        toggleButton.addEventListener("click", () => {
+          mobileMenu.classList.toggle("hidden");
+        });
+      }
     });
 </script>
 </body>

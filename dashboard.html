@@ -15,10 +15,13 @@
   </style>
 </head>
 <body class="text-white">
+  <div id="navbar"></div>
+  <!--
   <nav class="flex justify-between items-center px-6 py-4 bg-red-900 shadow-md">
     <h1 class="text-2xl font-bold">Admin Dashboard</h1>
     <a href="index.html" class="px-4 hover:underline">Back to Home</a>
   </nav>
+  -->
 
   <section class="p-6 max-w-5xl mx-auto">
     <h2 class="text-3xl font-bold text-yellow-400 mb-4">All Orders</h2>
@@ -78,12 +81,28 @@
         });
     }
   </script>
+</section>
   <div id="footer"></div>
 <script>
   fetch("footer.html")
     .then(res => res.text())
     .then(data => {
       document.getElementById("footer").innerHTML = data;
+    });
+</script>
+<script>
+  fetch("navbar.html")
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById("navbar").innerHTML = data;
+
+      const toggleButton = document.getElementById("toggleButton");
+      const mobileMenu = document.getElementById("mobileMenu");
+      if (toggleButton && mobileMenu) {
+        toggleButton.addEventListener("click", () => {
+          mobileMenu.classList.toggle("hidden");
+        });
+      }
     });
 </script>
 </body>

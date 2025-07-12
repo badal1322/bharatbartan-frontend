@@ -66,8 +66,20 @@
       .then(res => res.text())
       .then(data => {
         document.getElementById("navbar").innerHTML = data;
-      });
 
+        // Reattach toggle button logic after navbar is loaded
+        const toggleButton = document.getElementById("toggleButton");
+        const mobileMenu = document.getElementById("mobileMenu");
+
+        if (toggleButton && mobileMenu) {
+          toggleButton.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+          });
+        }
+      });
+  </script>
+
+  <script>
     fetch("inventory.html")
       .then(res => res.text())
       .then(html => {

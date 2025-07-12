@@ -1,74 +1,194 @@
-
-
 <!DOCTYPE html>
-<html lang="="en">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - BharatBartan</title>
+  <title>Login & Signup - BharatBartan</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <style>
     body {
       background: black;
       font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
     }
+    .tab-active {
+      background: #7c3aed;
+      color: white;
+    }
   </style>
+  <script>
+    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:5000'
+      : 'https://your-backend-url.onrender.com';  // Replace with actual backend URL
+  </script>
 </head>
 <body class="text-white">
+  <!-- Navbar -->
   <div id="navbar"></div>
   <script>
     fetch("navbar.html")
       .then(res => res.text())
       .then(data => {
         document.getElementById("navbar").innerHTML = data;
+        const toggleButton = document.getElementById("toggleButton");
+        const mobileMenu = document.getElementById("mobileMenu");
+        if (toggleButton && mobileMenu) {
+          toggleButton.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+          });
+        }
       });
   </script>
 
-  <!-- Contact Section -->
-  <section class="py-10 px-6 max-w-2xl mx-auto">
-    <h2 class="text-3xl font-medium text-white mb-6 text-center" style="font-family: 'Playfair Display', serif;">Login & Contact</h2>
-    
-    <form class="space-y-4">
+  <!-- Auth Section -->
+  <section class="py-10 px-6 max-w-md mx-auto">
+    <h2 class="text-3xl font-bold text-white mb-8 text-center" style="font-family: 'Playfair Display', serif;">Welcome to BharatBartan</h2>
+    <div class="flex mb-6 rounded-lg overflow-hidden border border-purple-700">
+      <button id="loginTab" class="flex-1 py-2 text-center focus:outline-none tab-active" type="button">Login</button>
+      <button id="signupTab" class="flex-1 py-2 text-center focus:outline-none" type="button">Sign Up</button>
+    </div>
+    <!-- Login Form -->
+    <form id="loginForm" class="space-y-5">
+      <div>
+        <label class="block mb-1">Email</label>
+        <input id="loginEmail" type="email" class="w-full p-2 rounded text-black focus:ring-2 focus:ring-purple-500" placeholder="Enter your email" required />
+      </div>
+      <div>
+        <label class="block mb-1">Password</label>
+        <input id="loginPassword" type="password" class="w-full p-2 rounded text-black focus:ring-2 focus:ring-purple-500" placeholder="Enter your password" required />
+      </div>
+      <button type="submit" class="bg-purple-700 text-white px-6 py-2 rounded hover:bg-purple-600 transition w-full">Login</button>
+      <div class="mt-2 text-center">
+        <a href="http://localhost:5000/auth/google" class="inline-block bg-red-700 text-white px-6 py-2 rounded hover:bg-red-600 transition mt-2">Login with Google</a>
+      </div>
+      <div id="loginMessage" class="text-center mt-3 text-sm"></div>
+    </form>
+    <!-- Signup Form -->
+    <form id="signupForm" class="space-y-5 hidden">
       <div>
         <label class="block mb-1">Name</label>
-        <input type="text" class="w-full p-2 rounded text-black focus:ring-2 focus:ring-purple-500" placeholder="Enter your name" />
+        <input id="signupName" type="text" class="w-full p-2 rounded text-black focus:ring-2 focus:ring-purple-500" placeholder="Full Name" required />
       </div>
       <div>
         <label class="block mb-1">Email</label>
-        <input type="email" class="w-full p-2 rounded text-black focus:ring-2 focus:ring-purple-500" placeholder="Enter your email" />
+        <input id="signupEmail" type="email" class="w-full p-2 rounded text-black focus:ring-2 focus:ring-purple-500" placeholder="Email address" required />
       </div>
       <div>
-        <label class="block mb-1">Delivery Address</label>
-        <textarea class="w-full p-2 rounded text-black focus:ring-2 focus:ring-purple-500" rows="3" placeholder="Enter delivery address"></textarea>
+        <label class="block mb-1">Password</label>
+        <input id="signupPassword" type="password" class="w-full p-2 rounded text-black focus:ring-2 focus:ring-purple-500" placeholder="Password" required />
       </div>
-      <button type="submit" class="bg-purple-700 text-white px-6 py-2 rounded hover:bg-purple-600 transition">Submit</button>
+      <button type="submit" class="bg-purple-700 text-white px-6 py-2 rounded hover:bg-purple-600 transition w-full">Sign Up</button>
+      <div class="mt-2 text-center">
+        <a href="http://localhost:5000/auth/google" class="inline-block bg-red-700 text-white px-6 py-2 rounded hover:bg-red-600 transition mt-2">Sign up with Google</a>
+      </div>
+      <div id="signupMessage" class="text-center mt-3 text-sm"></div>
     </form>
-
-    <div class="text-center mt-8">
-      <p class="mb-4">Already a user? Login with Google</p>
-      <a href="http://localhost:5000/auth/google" class="inline-block bg-red-700 text-white px-6 py-2 rounded hover:bg-red-600 transition">Login with Google</a>
+    <div class="mt-8 text-center text-gray-400 text-sm">
+      By continuing, you agree to our <a href="#" class="underline text-purple-400">Terms</a> and <a href="#" class="underline text-purple-400">Privacy Policy</a>.
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="bg-red-900 text-center text-white py-4 mt-10">
+  <div class="mt-10"></div>
+  <footer class="bg-red-900 text-center text-white py-4">
     <p>&copy; 2025 BharatBartan. Serving tradition with care.</p>
   </footer>
   <div id="footer"></div>
-<script>
-  fetch("footer.html")
-    .then(res => res.text())
-    .then(data => {
-      document.getElementById("footer").innerHTML = data;
+  <script>
+    fetch("footer.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("footer").innerHTML = data;
+      });
+  </script>
+
+  <!-- Auth JS -->
+  <script>
+    // Tab logic
+    const loginTab = document.getElementById('loginTab');
+    const signupTab = document.getElementById('signupTab');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    loginTab.addEventListener('click', () => {
+      loginTab.classList.add('tab-active');
+      signupTab.classList.remove('tab-active');
+      loginForm.classList.remove('hidden');
+      signupForm.classList.add('hidden');
     });
-</script>
-<div id="footer"></div>
-<script>
-  fetch("footer.html")
-    .then(res => res.text())
-    .then(data => {
-      document.getElementById("footer").innerHTML = data;
+    signupTab.addEventListener('click', () => {
+      signupTab.classList.add('tab-active');
+      loginTab.classList.remove('tab-active');
+      signupForm.classList.remove('hidden');
+      loginForm.classList.add('hidden');
     });
-</script>
+
+    // Login handler
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const loginMessage = document.getElementById('loginMessage');
+      loginMessage.textContent = "Logging in...";
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+          loginMessage.textContent = "Login successful! Redirecting...";
+          loginMessage.classList.remove("text-red-500");
+          loginMessage.classList.add("text-green-500");
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 1000);
+        } else {
+          loginMessage.textContent = data.message || "Login failed.";
+          loginMessage.classList.remove("text-green-500");
+          loginMessage.classList.add("text-red-500");
+        }
+      } catch (err) {
+        loginMessage.textContent = "Network error.";
+        loginMessage.classList.remove("text-green-500");
+        loginMessage.classList.add("text-red-500");
+      }
+    });
+
+    // Signup handler
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      const signupMessage = document.getElementById('signupMessage');
+      signupMessage.textContent = "Signing up...";
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/signup`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+          signupMessage.textContent = "Signup successful! Redirecting...";
+          signupMessage.classList.remove("text-red-500");
+          signupMessage.classList.add("text-green-500");
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 1000);
+        } else {
+          signupMessage.textContent = data.message || "Signup failed.";
+          signupMessage.classList.remove("text-green-500");
+          signupMessage.classList.add("text-red-500");
+        }
+      } catch (err) {
+        signupMessage.textContent = "Network error.";
+        signupMessage.classList.remove("text-green-500");
+        signupMessage.classList.add("text-red-500");
+      }
+    });
+  </script>
 </body>
 </html>
